@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.dbt-venv/
+
+# secrets / local env
+.env
+*.env
+
+# dbt build artifacts
+dbt-postgres/target/
+dbt-postgres/logs/
+dbt-postgres/dbt_packages/
+
+# generated data + eval output
+db/data/
+db/output/
+postgres-ai-agent/eval_results.json
+
+# fastembed / model caches
+.cache/
+*.onnx

@@ -1,0 +1,57 @@
+# Agent-evaluation dataset — ported from the Snowflake lab's AGENT_EVALUATION_DATA
+# (snowflake-cowork/agent_evaluation.sql). Same 7 questions + ground-truth
+# expectations, with dates localized to this data (orders span 2025-06..2026-06,
+# revenue peaks Nov 2025). ground_truth describes what a good answer should do/
+# contain (not an exact string); expected_tools is informational (routing check).
+
+- id: q1_revenue_trend
+  query: "Show me the monthly revenue trend from August to November 2025"
+  expected_tools: [query_business_data]
+  ground_truth: >
+    The agent should query structured business data (query_business_data) to
+    produce a monthly revenue breakdown with a figure for each month Aug–Nov 2025,
+    showing growth from August/September up to the November peak.
+
+- id: q2_dip_why
+  query: "Revenue in a shoulder month was lower than the November peak — what do customer reviews and tickets suggest about customer issues during slower periods?"
+  expected_tools: [query_business_data, search_customer_feedback]
+  ground_truth: >
+    The agent should use BOTH query_business_data and search_customer_feedback,
+    connecting a quantitative revenue difference between months to qualitative
+    reasons drawn from customer reviews or support tickets.
+
+- id: q3_wrong_size_low_rating
+  query: "Find reviews mentioning wrong size with a rating below 3"
+  expected_tools: [search_customer_feedback]
+  ground_truth: >
+    The agent should use search_customer_feedback to find product reviews that
+    mention sizing issues with ratings below 3, including specific review content,
+    product names, and ratings.
+
+- id: q4_ski_boot_returns
+  query: "Why are customers returning ski boots?"
+  expected_tools: [search_customer_feedback]
+  ground_truth: >
+    The agent should search customer feedback about ski boot returns and identify
+    common reasons (sizing, comfort/fit, or quality), citing specific feedback.
+
+- id: q5_revenue_by_state
+  query: "What is our total revenue and customer count by state?"
+  expected_tools: [query_business_data]
+  ground_truth: >
+    The agent should use query_business_data to aggregate total revenue and distinct
+    customer count grouped by state, listing states with their revenue and counts.
+
+- id: q6_complaint_themes
+  query: "What are the top complaint themes in our support tickets?"
+  expected_tools: [search_customer_feedback]
+  ground_truth: >
+    The agent should use search_customer_feedback over support tickets and identify
+    the main complaint themes with concrete examples from actual tickets.
+
+- id: q7_sizing_products
+  query: "How many reviews mention sizing issues, and which products are most affected?"
+  expected_tools: [search_customer_feedback]
+  ground_truth: >
+    The agent should use search_customer_feedback to find reviews mentioning sizing
+    issues, giving a count and identifying which products are most frequently affected.

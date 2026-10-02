@@ -1,0 +1,12 @@
+automated_intelligence:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: "{{ env_var('PGHOST', '/var/run/postgresql') }}"
+      port: "{{ env_var('PGPORT', 5432) | int }}"
+      user: "{{ env_var('PGUSER', 'sandbox') }}"
+      password: "{{ env_var('PGPASSWORD', '') }}"
+      dbname: "{{ env_var('PGDATABASE', 'snowport') }}"
+      schema: raw          # base schema; overridden per-folder by generate_schema_name
+      threads: 4

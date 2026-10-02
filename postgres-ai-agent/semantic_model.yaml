@@ -1,0 +1,92 @@
+# Semantic model — the hand-written replacement for the Snowflake Cortex Analyst
+# Semantic View. The text-to-SQL tool injects this into the DeepSeek prompt so the
+# model knows the tables, grains, joinable keys, metrics, and synonyms. Keep it
+# accurate: text-to-SQL quality is only as good as this description.
+
+database: snowport
+dialect: postgresql
+default_schema: raw
+
+tables:
+  - name: raw.customers
+    grain: one row per customer
+    description: Customer master data (retail snow-sports company).
+    columns:
+      customer_id: Primary key (integer).
+      customer_segment: "Premium | Standard | Basic."
+      state: "2-letter region code. Values: CO, UT, WY, CA, WA, OR, MT, ID, NV, BC."
+      city: City name.
+      registration_date: Date the customer signed up.
+
+  - name: raw.orders
+    grain: one row per order
+    description: Order headers. order_id is a UUID string.
+    columns:
+      order_id: Primary key (uuid text).
+      customer_id: FK -> raw.customers.customer_id.
+      order_date: Timestamp of the order (data spans 2025-06 .. 2026-06).
+      order_status: "Completed | Shipped | Processing | Pending | Cancelled."
+      total_amount: "Order revenue in USD (NUMERIC). NOTE: ~200 rows are NULL (injected data-quality issue)."
+      discount_percent: Discount percent applied.
+      shipping_cost: Shipping cost USD.
+
+  - name: raw.order_items
+    grain: one row per line item
+    description: Order line items; join to orders on order_id.
+    columns:
+      order_item_id: Primary key (uuid text).
+      order_id: FK -> raw.orders.order_id.
+      product_id: FK -> raw.product_catalog.product_id.
+      product_name: Product name (some NULLs injected).
+      product_category: "Skis | Snowboards | Boots | Accessories."
+      quantity: Units (some NULLs injected).
+      unit_price: Price per unit USD.
+      line_total: quantity * unit_price USD.
+
+  - name: raw.product_catalog
+    grain: one row per product (10 products)
+    columns:
+      product_id: Primary key.
+      product_name: Product name.
+      product_category: Category.
+      price: List price USD.
+      stock_quantity: Units in stock.
+
+  # Pre-built analytics (dbt marts) — prefer these for customer/product analytics.
+  - name: dbt_analytics.customer_lifetime_value
+    grain: one row per customer
+    description: CLV / RFM metrics per customer.
+    columns:
+      customer_id: PK.
+      total_revenue: Lifetime revenue (Completed+Shipped orders).
+      total_orders: Lifetime order count.
+      value_tier: "high_value | medium_value | low_value | no_purchases."
+      customer_status: "active | at_risk | churned | never_purchased."
+      rfm_score: Composite 0-10 RFM score.
+
+  - name: dbt_analytics.product_performance
+    grain: one row per product
+    columns:
+      product_name: Product.
+      total_revenue: Revenue for the product.
+      units_sold: Units sold.
+      avg_rating: Average review rating.
+      revenue_rank: 1 = top revenue product.
+
+relationships:
+  - raw.orders.customer_id = raw.customers.customer_id
+  - raw.order_items.order_id = raw.orders.order_id
+  - raw.order_items.product_id = raw.product_catalog.product_id
+  - dbt_analytics.customer_lifetime_value.customer_id = raw.customers.customer_id
+
+metrics:
+  revenue: SUM(raw.orders.total_amount)
+  order_count: COUNT(raw.orders.order_id)
+  customer_count: COUNT(DISTINCT raw.customers.customer_id)
+  monthly_revenue: SUM(total_amount) grouped by date_trunc('month', order_date)
+
+hints:
+  - "For revenue by region, join raw.orders to raw.customers and GROUP BY customers.state."
+  - "total_amount can be NULL; SUM ignores NULLs, which is fine for revenue."
+  - "For 'lifetime value' or customer tiers, use dbt_analytics.customer_lifetime_value."
+  - "Qualify every table with its schema. Only the tables above exist."

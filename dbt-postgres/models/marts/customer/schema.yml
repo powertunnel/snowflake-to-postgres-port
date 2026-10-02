@@ -1,0 +1,43 @@
+version: 2
+
+models:
+  - name: customer_lifetime_value
+    description: "Customer lifetime value with RFM scoring and value tiers"
+    columns:
+      - name: customer_id
+        description: "Primary key"
+        tests:
+          - unique
+          - not_null
+      - name: total_revenue
+        description: "Total revenue from customer"
+        tests:
+          - not_null
+      - name: rfm_score
+        description: "Composite RFM score (0-10)"
+      - name: value_tier
+        description: "high_value, medium_value, low_value, or no_purchases"
+      - name: customer_status
+        description: "active, at_risk, churned, or never_purchased"
+
+  - name: customer_segmentation
+    description: "Behavioral customer segments with recommended actions"
+    columns:
+      - name: customer_id
+        description: "Primary key"
+        tests:
+          - unique
+          - not_null
+      - name: behavioral_segment
+        description: "RFM-based segment (champions, loyal_customers, at_risk, etc.)"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['champions', 'loyal_customers', 'potential_loyalists', 
+                       'promising', 'at_risk', 'cant_lose_them', 
+                       'hibernating_high_value', 'lost', 'new_customers', 
+                       'needs_attention']
+      - name: recommended_action
+        description: "Marketing action recommendation for this segment"
+      - name: segment_priority
+        description: "Priority level (1=highest, 5=lowest)"

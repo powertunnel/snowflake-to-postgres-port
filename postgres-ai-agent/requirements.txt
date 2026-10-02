@@ -1,0 +1,4 @@
+psycopg2-binary>=2.9
+python-dotenv>=1.0
+requests>=2.31
+mcp>=2.0        # only needed for the MCP server (aiagent.mcp_server)

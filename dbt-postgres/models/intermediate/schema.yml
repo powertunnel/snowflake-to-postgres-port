@@ -1,0 +1,26 @@
+version: 2
+
+models:
+  - name: int_customer_orders
+    description: "Customer order aggregations combining customers, orders, and order items"
+    columns:
+      - name: customer_id
+        tests:
+          - unique
+          - not_null
+
+  - name: int_product_metrics
+    description: "Product performance metrics combining sales and reviews"
+    columns:
+      - name: product_id
+        tests:
+          - unique
+          - not_null
+
+  - name: int_customer_support
+    description: "Customer support ticket aggregations"
+    columns:
+      - name: customer_id
+        tests:
+          - unique
+          - not_null

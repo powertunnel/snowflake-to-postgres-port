@@ -1,0 +1,30 @@
+version: 2
+
+models:
+  - name: monthly_cohorts
+    description: "Monthly cohort analysis tracking retention and revenue over time"
+    columns:
+      - name: cohort_month
+        description: "Month the cohort signed up"
+        tests:
+          - not_null
+      - name: months_since_signup
+        description: "Number of months since cohort signup"
+        tests:
+          - not_null
+      - name: cohort_size
+        description: "Number of customers in cohort"
+        tests:
+          - not_null
+      - name: active_customers
+        description: "Number of active customers in this period"
+      - name: retention_rate
+        description: "% of cohort still active"
+      - name: cohort_revenue
+        description: "Revenue from cohort in this period"
+      - name: monthly_churn_rate
+        description: "Churn rate compared to previous month"
+      - name: cohort_health
+        description: "healthy, moderate, at_risk, or poor"
+      - name: estimated_ltv_to_date
+        description: "Cumulative LTV per customer to date"

@@ -1,0 +1,68 @@
+version: 2
+
+models:
+  - name: stg_customers
+    description: "Staging view for customer data with derived temporal fields"
+    columns:
+      - name: customer_id
+        description: "Primary key"
+        tests:
+          - unique
+          - not_null
+      - name: days_since_signup
+        description: "Number of days since customer signed up"
+      - name: signup_month
+        description: "Month of signup (for cohort analysis)"
+      - name: signup_year
+        description: "Year of signup"
+
+  - name: stg_orders
+    description: "Staging view for orders with aggregated line item metrics"
+    columns:
+      - name: order_id
+        description: "Primary key - UUID VARCHAR(36)"
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        description: "Foreign key to customers"
+        tests:
+          - not_null
+      - name: item_count
+        description: "Number of line items in order"
+      - name: total_quantity
+        description: "Total quantity of all items"
+
+  - name: stg_order_items
+    description: "Staging view for order items enriched with product information"
+    columns:
+      - name: order_item_id
+        description: "Primary key - UUID VARCHAR(36)"
+        tests:
+          - unique
+          - not_null
+      - name: order_id
+        description: "Foreign key to orders"
+        tests:
+          - not_null
+      - name: product_id
+        description: "Foreign key to products"
+        tests:
+          - not_null
+      - name: pricing_type
+        description: "discounted, premium, or standard pricing"
+
+  - name: stg_products
+    description: "Staging view for product catalog with margin calculations"
+    columns:
+      - name: product_id
+        description: "Primary key"
+        tests:
+          - unique
+          - not_null
+      - name: margin
+        description: "Absolute margin (price - cost)"
+      - name: margin_percent
+        description: "Margin as percentage of price"
+      - name: stock_status
+        description: "low, medium, or adequate stock level"

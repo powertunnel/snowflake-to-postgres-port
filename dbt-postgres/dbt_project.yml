@@ -1,0 +1,58 @@
+name: 'automated_intelligence_analytics'
+version: '1.0.0'
+config-version: 2
+
+profile: 'automated_intelligence'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  automated_intelligence_analytics:
+    # Staging models - source layer
+    staging:
+      +materialized: view
+      +schema: dbt_staging
+
+    # Intermediate models - business logic
+    intermediate:
+      +materialized: view
+      +schema: dbt_intermediate
+      +tags: ["intermediate"]
+
+    # Marts - analytical models
+    marts:
+      +materialized: table
+      +schema: dbt_analytics
+
+      # Customer analytics
+      customer:
+        +tags: ["customer", "analytics"]
+
+      # Product analytics
+      product:
+        +tags: ["product", "analytics"]
+
+      # Cohort analytics
+      cohort:
+        +tags: ["cohort", "analytics"]
+
+      # Support analytics
+      support:
+        +tags: ["support", "analytics"]
+
+vars:
+  # Date parameters for incremental models
+  lookback_days: 90
+  
+  # Customer segmentation thresholds
+  high_value_threshold: 17500
+  active_customer_days: 21

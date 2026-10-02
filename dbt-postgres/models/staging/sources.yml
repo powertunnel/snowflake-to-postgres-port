@@ -1,0 +1,97 @@
+version: 2
+
+sources:
+  - name: raw
+    database: snowport
+    schema: raw
+    description: "Raw operational data from Snowpipe Streaming"
+    tables:
+      - name: customers
+        description: "Customer master data"
+        columns:
+          - name: customer_id
+            description: "Primary key"
+            tests:
+              - unique
+              - not_null
+          - name: email
+            tests:
+              - not_null
+          - name: registration_date
+            tests:
+              - not_null
+      
+      - name: orders
+        description: "Order transactions (UUID order_id from Snowpipe Streaming)"
+        columns:
+          - name: order_id
+            description: "Primary key - VARCHAR(36) UUID"
+            tests:
+              - unique
+              - not_null
+          - name: customer_id
+            tests:
+              - not_null
+          - name: order_date
+            tests:
+              - not_null
+          - name: total_amount
+            tests:
+              - not_null:
+                  config:
+                    severity: warn
+      
+      - name: order_items
+        description: "Order line items"
+        columns:
+          - name: order_item_id
+            description: "Primary key - VARCHAR(36) UUID"
+            tests:
+              - unique
+              - not_null
+          - name: order_id
+            description: "Foreign key to orders"
+            tests:
+              - not_null
+          - name: product_id
+            tests:
+              - not_null
+      
+      - name: product_catalog
+        description: "Product information"
+        columns:
+          - name: product_id
+            description: "Primary key"
+            tests:
+              - unique
+              - not_null
+
+      - name: product_reviews
+        description: "Customer product reviews"
+        columns:
+          - name: review_id
+            description: "Primary key"
+            tests:
+              - unique
+              - not_null
+          - name: customer_id
+            tests:
+              - not_null
+          - name: product_id
+            tests:
+              - not_null
+          - name: rating
+            tests:
+              - not_null
+
+      - name: support_tickets
+        description: "Customer support tickets"
+        columns:
+          - name: ticket_id
+            description: "Primary key"
+            tests:
+              - unique
+              - not_null
+          - name: customer_id
+            tests:
+              - not_null

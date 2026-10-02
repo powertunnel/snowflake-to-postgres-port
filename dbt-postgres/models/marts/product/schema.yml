@@ -1,0 +1,46 @@
+version: 2
+
+models:
+  - name: product_affinity
+    description: "Market basket analysis showing which products are bought together"
+    columns:
+      - name: product_a_id
+        description: "First product in the pair"
+        tests:
+          - not_null
+      - name: product_b_id
+        description: "Second product in the pair"
+        tests:
+          - not_null
+      - name: times_bought_together
+        description: "Number of orders containing both products"
+      - name: confidence_a_to_b
+        description: "P(B|A) - probability of buying B given A purchased"
+      - name: lift
+        description: "How much more likely to buy together than independently"
+        tests:
+          - not_null
+      - name: affinity_strength
+        description: "very_strong, strong, moderate, weak, or very_weak"
+
+  - name: product_recommendations
+    description: "Product recommendations based on purchase patterns"
+    columns:
+      - name: source_product_id
+        description: "Product being viewed/purchased"
+        tests:
+          - not_null
+      - name: recommended_product_id
+        description: "Product to recommend"
+        tests:
+          - not_null
+      - name: recommendation_rank
+        description: "Rank of recommendation (1=best)"
+        tests:
+          - not_null
+      - name: confidence
+        description: "Confidence score for recommendation"
+      - name: recommendation_message
+        description: "Human-readable recommendation text"
+      - name: is_cross_category
+        description: "Whether recommendation crosses product categories"
