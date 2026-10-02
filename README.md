@@ -7,6 +7,10 @@ Snowflake quickstart
 [**Build an End-to-End AI App on Snowflake**](https://github.com/Snowflake-Labs/sfguide-build-end-to-end-ai-app-on-snowflake)
 (the retail snow-sports analytics lab).
 
+> **Note:** a personal, educational project — an independent exploration of what
+> ports cleanly and what has to be rebuilt. It has known rough edges (see the caveats
+> in `postgres-ai-agent/README.md`) and is not a production-ready or supported product.
+
 The data-engineering, dbt, and row-level-security pieces **port** to Postgres. The
 Snowflake-native AI services (Cortex Analyst / Search / Agent / CoWork, the managed
 MCP server) have no Postgres equivalent, so they are **reconstructed** on an open
