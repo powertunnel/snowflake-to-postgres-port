@@ -22,3 +22,6 @@ postgres-ai-agent/eval_results.json
 # fastembed / model caches
 .cache/
 *.onnx
+
+# dbt anonymous-usage id
+dbt-postgres/.user.yml
