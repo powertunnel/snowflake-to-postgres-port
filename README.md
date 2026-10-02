@@ -1,5 +1,7 @@
 # Snowflake → PostgreSQL port
 
+[![Topics](https://img.shields.io/badge/topics-20-0A66C2?logo=github&logoColor=white)](https://github.com/powertunnel/snowflake-to-postgres-port#:~:text=Topics)
+
 A working PostgreSQL port of the data, analytics, security, and AI layers from the
 Snowflake quickstart
 [**Build an End-to-End AI App on Snowflake**](https://github.com/Snowflake-Labs/sfguide-build-end-to-end-ai-app-on-snowflake)
